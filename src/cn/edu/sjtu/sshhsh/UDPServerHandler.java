@@ -19,10 +19,11 @@ public class UDPServerHandler extends SimpleChannelInboundHandler<DatagramPacket
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet)
             throws Exception
     {
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress();
+        String clientIP = packet.sender().getAddress().getHostAddress();
 
         ByteBuf buf = (ByteBuf) packet.copy().content();
         dataRecorder.getData(clientIP, buf);
+
+        buf.release();
     }
 }

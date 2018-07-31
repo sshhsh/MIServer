@@ -8,6 +8,6 @@ public class Main {
         } else {
             port = 8000;
         }
-        new DiscardServer(port).run();
+        new UDPServer(port).run();
     }
 }

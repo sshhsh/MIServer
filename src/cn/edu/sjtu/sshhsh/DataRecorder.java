@@ -14,16 +14,18 @@ public class DataRecorder {
     private Map<String, Node> nodes;
     private String time;
     private class Node{
-        int ID;
+        String ID;
         int tmp;
         boolean isfirst;
         long count;
+        int count10;
         long previousTime;
         FileWriter writer;
         Node(){
-            ID = -1;
+            ID = "null";
             isfirst = true;
             count = 0;
+            count10 = 0;
             previousTime = System.currentTimeMillis();
         }
     }
@@ -34,7 +36,7 @@ public class DataRecorder {
         }
         if(time==null) {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HH.mm.ss");
-            time = format.format(new Date()) + "x10";
+            time = format.format(new Date()) + "z50_3";
             File file = new File(time);
             if (!file.exists()) {//如果文件夹不存在
                 file.mkdir();//创建文件夹
@@ -55,28 +57,41 @@ public class DataRecorder {
                     current.tmp = b.readByte();
 //                    System.out.print(current.tmp);
 //                    System.out.print("  ");
+                    if((current.tmp&1)==0){
+                        System.out.println(clientIP + ": First packet loss!");
+                        continue;
+                    }
                     current.isfirst = false;
                 }else {
                     byte second = b.readByte();
-                    int res = (current.tmp<<4)|((second>>4)&15);
-//                    int res = (current.tmp<<8)|(second);
+                    if((second&1)!=0){
+                        current.tmp = second;
+                        System.out.println(clientIP + ": Second packet loss!");
+                        continue;
+                    }
+//                    int res = (current.tmp<<4)|((second>>4)&15);
+                    int res = (((current.tmp<<6)&(~127))|(second>>1)&127);
 //                    System.out.print(second>>4);
 //                    System.out.print("  ");
 //                    System.out.println(res);
 //                    System.out.print('\n');
                     current.isfirst = true;
 
-                    int id = second&15;
-//                    int id = 0;
+//                    int id = second&15;
                     if(current.writer==null){
-                        current.writer=new FileWriter(time + '/' + Integer.toString(id));
-                        current.ID = id;
+                        current.writer=new FileWriter(time + '/' + clientIP);
+                        current.ID = clientIP;
                     }
-                    if(current.ID!=id){
+                    if(!current.ID.equals(clientIP)){
                         System.out.println("WRONG ID");
                     }else {
                         current.writer.write(Integer.toString(res) + ',');
                         current.count++;
+                        current.count10++;
+                        if(current.count10 >= 10){
+                            current.writer.write('\n');
+                            current.count10 = 0;
+                        }
                     }
                 }
 
