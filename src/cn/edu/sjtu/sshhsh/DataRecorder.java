@@ -13,6 +13,7 @@ import java.util.Map;
 public class DataRecorder {
     private Map<String, Node> nodes;
     private String time;
+    long startTime;
     private class Node{
         String ID;
         int tmp;
@@ -36,12 +37,13 @@ public class DataRecorder {
         }
         if(time==null) {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HH.mm.ss");
-            time = format.format(new Date()) + "z50_3";
+            time = format.format(new Date()) + "x50z50";
             File file = new File(time);
             if (!file.exists()) {//如果文件夹不存在
                 file.mkdir();//创建文件夹
             }
         }
+        startTime=System.currentTimeMillis();
     }
 
     public void getData(String clientIP, ByteBuf b){
@@ -99,7 +101,8 @@ public class DataRecorder {
                 if(currentTime-current.previousTime>1000){
                     System.out.print(current.ID);
                     System.out.print(' ');
-                    System.out.println(current.count);
+                    System.out.print(current.count + " run time: ");
+                    System.out.println((currentTime - startTime)/1000);
                     current.previousTime = currentTime;
                     current.count = 0;
                 }
