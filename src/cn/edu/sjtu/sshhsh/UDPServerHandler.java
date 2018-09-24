@@ -5,14 +5,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.net.InetSocketAddress;
 
 public class UDPServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
-    static private DataRecorder dataRecorder;
+//    static private DataRecorder dataRecorder;
+    static private RealTimeClassifier dataRecorder;
 
     public UDPServerHandler(){
-        if(dataRecorder == null)
-            dataRecorder = new DataRecorder();
+        if(dataRecorder == null) {
+//            dataRecorder = new DataRecorder();
+            dataRecorder = new RealTimeClassifier();
+        }
     }
 
     @Override

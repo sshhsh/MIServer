@@ -4,22 +4,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Map;
 
 public class DiscardServerHandler extends ChannelInboundHandlerAdapter { // (1)
-    static private DataRecorder dataRecorder;
+    static private RealTimeClassifier dataRecorder;
 
     public DiscardServerHandler(){
         if(dataRecorder==null)
-            dataRecorder = new DataRecorder();
+            dataRecorder = new RealTimeClassifier();
     }
 
     @Override

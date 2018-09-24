@@ -11,6 +11,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class DataRecorder {
+    private static final int ctime = 600;
+    private static final String name = "z100";
+
     private Map<String, Node> nodes;
     private String time;
     long startTime;
@@ -37,7 +40,7 @@ public class DataRecorder {
         }
         if(time==null) {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HH.mm.ss");
-            time = format.format(new Date()) + "x50z50";
+            time = format.format(new Date()) + name;
             File file = new File(time);
             if (!file.exists()) {//如果文件夹不存在
                 file.mkdir();//创建文件夹
@@ -102,7 +105,10 @@ public class DataRecorder {
                     System.out.print(current.ID);
                     System.out.print(' ');
                     System.out.print(current.count + " run time: ");
-                    System.out.println((currentTime - startTime)/1000);
+                    long t = (currentTime - startTime)/1000;
+                    System.out.println(t);
+                    if(t>=ctime)
+                        System.exit(0);
                     current.previousTime = currentTime;
                     current.count = 0;
                 }
